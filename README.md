@@ -6,9 +6,8 @@ Application to optimize pricelist for online shop based on other shops' pricelis
 Solution heavily relies on nuget packages.
 Please, make sure you have nuget installed and package restore option is [enabled](http://docs.nuget.org/docs/workflows/using-nuget-without-committing-packages "How to enable package restore in nuget").
 
-Roadmap:
+Roadmap
 ---------------------
-
 -   Base application layout [done]
 -   Category parser [done]
 -   Tests coverage
