@@ -53,10 +53,10 @@
     <Compile Include="Entities\Product.cs" />
     <Compile Include="OnlinerDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\ICategoryRepository.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\EntityFramework.Patterns\EntityFramework.Patterns.csproj">
       <Project>{30741400-54AE-43BF-8590-2EF239EF537E}</Project>

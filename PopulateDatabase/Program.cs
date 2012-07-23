@@ -3,6 +3,7 @@ using Autofac;
 using Crawler;
 using EntityFramework.Patterns;
 using OnlinerModel;
+using OnlinerModel.Repositories;
 using OnlinerParsers;
 
 namespace PopulateDatabase
@@ -19,8 +20,11 @@ namespace PopulateDatabase
 
 			builder.RegisterType<OnlinerDb>().As<DbContext>();
 			builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
+
+			// Repositories.
 			builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
-			
+			builder.RegisterType<CategoryRepository>().As<ICategoryRepository>();
+
             // Repositories and units of work will be sharing the same instance of DbContextAdapter.
 			builder.Register(c => new DbContextAdapter(c.Resolve<DbContext>())).SingleInstance();
 

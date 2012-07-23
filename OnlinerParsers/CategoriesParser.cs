@@ -7,6 +7,7 @@ using Crawler;
 using EntityFramework.Patterns;
 using HtmlAgilityPack;
 using OnlinerModel;
+using OnlinerModel.Repositories;
 
 namespace OnlinerParsers
 {
@@ -14,13 +15,13 @@ namespace OnlinerParsers
 	{
 		private readonly ILog logger;
 		private readonly IWebCrawler crawler;
-		private readonly IRepository<Category> categories;
+		private readonly ICategoryRepository categories;
 		private readonly IUnitOfWork uow;
 
 		// TODO: Provide baseUrl externally.
 		private const string baseUrl = "http://catalog.onliner.by/";
 
-		public CategoriesParser(ILog logger, IWebCrawler crawler, IRepository<Category> categories, IUnitOfWork uow)
+		public CategoriesParser(ILog logger, IWebCrawler crawler, ICategoryRepository categories, IUnitOfWork uow)
 		{
 			this.logger = logger;
 			this.crawler = crawler;
@@ -43,30 +44,7 @@ namespace OnlinerParsers
 			if (doc != null)
 			{
 				IList<Category> parsedCategories = ParseCategoriesList(doc);
-
-				// 1. Remove the categories UrlPart for which no longer appears on the category page.
-				var urlParts = parsedCategories.Select(c => c.UrlPart);
-
-				foreach (Category category in categories.AsQueryable().Where(category => !urlParts.Contains(category.UrlPart)))
-				{
-					categories.Delete(category);
-				}
-				
-				// 2. Update Name for remaining categories and insert new ones.
-				IList<Category> existingCategories = categories.AsQueryable().ToList();
-				foreach (Category parsedCategory in parsedCategories)
-				{
-					Category foundItem = existingCategories.FirstOrDefault(c => c.UrlPart == parsedCategory.UrlPart);
-					if (foundItem != null)
-					{
-						foundItem.Name = parsedCategory.Name;
-					}
-					else
-					{
-						categories.Insert(parsedCategory);
-					}
-				}
-
+				categories.UpdateCategories(parsedCategories);
 				try
 				{
 					uow.Commit();
